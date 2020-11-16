@@ -6,7 +6,6 @@
 #define T3_LARGENUM_H
 
 #include <map>
-#include <utility>
 
 // 用于格式化用户输入的大数
 class FormatNum{
@@ -109,6 +108,18 @@ public:
     LargeNum Solve(const LargeNum &num1, const LargeNum &num2) override;
 };
 
+class ComFactory{
+public:
+    ComFactory() = default;
+    ~ComFactory();
+    Compute* Get(char sym);
+
+private:
+    CAddition *caddition_;
+    CSubtraction *csubtraction_;
+    CMultiplication *cmultiplication_;
+    CDivision *cdivision_;
+}
 
 
 #endif //T3_LARGENUM_H

@@ -345,6 +345,7 @@ LargeNum CMultiplication::Solve(const LargeNum &num1, const LargeNum &num2){
 
 LargeNum CDivision::Solve(const LargeNum &num1, const LargeNum &num2){
     stringstream ss;
+    if (num2.initer_=="0" && !num2.decimals_) return LargeNum();
     int slide = 3+num2.fractional_.size()-num1.fractional_.size();
     string n1 = num1.initer_+num1.fractional_;
     string n2 = num2.initer_+num2.fractional_;
@@ -379,9 +380,11 @@ LargeNum CDivision::Solve(const LargeNum &num1, const LargeNum &num2){
                     out.substr(out.size()-2,2));
 }
 
+ComFactory comfactory;
+
 LargeNum operator + (const LargeNum& num1, const LargeNum& num2){
-    CAddition add;
-    return add.Solve(num1,num2);
+    CAddition *add = comfactory.Get('+');
+    return add->Solve(num1,num2);
 }
 
 LargeNum operator - (const LargeNum& num1, const LargeNum& num2){
@@ -397,4 +400,34 @@ LargeNum operator * (const LargeNum& num1, const LargeNum& num2){
 LargeNum operator / (const LargeNum& num1, const LargeNum& num2){
     CDivision div;
     return div.Solve(num1,num2);
+}
+
+ComFactory::~ComFactory(){
+    if(caddition_ != nullptr) delete caddition_;
+    if(csubtraction_ != nullptr) delete csubtraction_;
+    if(cmultiplication_ != nullptr) delete cmultiplication_;
+    if(cdivision_ != nullptr) delete cdivision_;
+}
+
+Compute* ComFactory::Get(char sym){
+    switch(sym){
+        case '+':
+            if(caddition_ == nullptr) caddition_ = new CAddition;
+            return caddition_;
+            break;
+        case '-':
+            if(csubtraction_ == nullptr) csubtraction_ = new CSubtraction;
+            return csubtraction_;
+            break;
+        case '*':
+            if(cmultiplication_ == nullptr) cmultiplication_ = new CMultiplication;
+            return cmultiplication_;
+            break;
+        case '/':
+            if(cdivision_ == nullptr) cdivision_ = new CDivision;
+            return cdivision_;
+            break;
+        default:
+            return nullptr;
+    }
 }
