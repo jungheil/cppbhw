@@ -4,8 +4,8 @@
 
 int main() {
     LargeNum a("2.222");
-    LargeNum b("2.2");
+    LargeNum b("0");
 
-    std::cout <<LargeNum(true,"1","01")<< std::endl;
+    std::cout <<a/b<< std::endl;
     return 0;
 }

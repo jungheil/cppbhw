@@ -383,23 +383,23 @@ LargeNum CDivision::Solve(const LargeNum &num1, const LargeNum &num2){
 ComFactory comfactory;
 
 LargeNum operator + (const LargeNum& num1, const LargeNum& num2){
-    CAddition *add = comfactory.Get('+');
+    Compute *add = comfactory.Get('+');
     return add->Solve(num1,num2);
 }
 
 LargeNum operator - (const LargeNum& num1, const LargeNum& num2){
-    CSubtraction sub;
-    return sub.Solve(num1, num2);
+    Compute *sub = comfactory.Get('-');
+    return sub->Solve(num1, num2);
 }
 
 LargeNum operator * (const LargeNum& num1, const LargeNum& num2){
-    CMultiplication mul;
-    return mul.Solve(num1, num2);
+    Compute *mul = comfactory.Get('*');
+    return mul->Solve(num1, num2);
 }
 
 LargeNum operator / (const LargeNum& num1, const LargeNum& num2){
-    CDivision div;
-    return div.Solve(num1,num2);
+    Compute *div = comfactory.Get('/');
+    return div->Solve(num1,num2);
 }
 
 ComFactory::~ComFactory(){

@@ -119,7 +119,7 @@ private:
     CSubtraction *csubtraction_;
     CMultiplication *cmultiplication_;
     CDivision *cdivision_;
-}
+};
 
 
 #endif //T3_LARGENUM_H

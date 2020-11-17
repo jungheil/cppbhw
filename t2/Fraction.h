@@ -11,6 +11,7 @@ class Fraction{
 public:
     Fraction():nan_(true){};
     Fraction(int numerator, int denominator = 1);
+    Fraction(std::string fraction);
 
     friend std::ostream& operator << (std::ostream&, const Fraction&);
     friend std::istream& operator >> (std::istream&, Fraction&);

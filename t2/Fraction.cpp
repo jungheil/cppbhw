@@ -4,12 +4,41 @@
 
 #include "Fraction.h"
 
+#include <sstream>
+
 Fraction::Fraction(int numerator, int denominator):
         numerator_(numerator), denominator_(denominator) {
     if(denominator == 0){
         nan_ = true;
     }
     Simplify();
+}
+
+Fraction::Fraction(std::string fraction){
+    std::stringstream ss;
+    ss.str("0" );
+    bool flag=true;
+    for(const auto &s: fraction){
+        if (s == ' ') continue;
+        else if (s == '/' && flag){
+            ss >> numerator_;
+            ss.clear();
+            flag = !flag;
+        }else if(s > 47 && s < 58){
+            ss << s;
+        }else{
+            nan_ = true;
+            return;
+        }
+    }
+    if(flag){
+        ss >> numerator_;
+        denominator_ = 1;
+    }else{
+        ss >> denominator_;
+        if(denominator_ == 0) nan_ = true;
+        Simplify();
+    }
 }
 
 std::ostream& operator << (std::ostream& out, const Fraction& fraction){
@@ -26,7 +55,9 @@ std::ostream& operator << (std::ostream& out, const Fraction& fraction){
 }
 
 std::istream& operator >> (std::istream& in, Fraction& fraction){
-    in >> fraction.numerator_ >> fraction.denominator_;
+    std::string str;
+    in >> str;
+    fraction = Fraction(str);
     return in;
 }
 
