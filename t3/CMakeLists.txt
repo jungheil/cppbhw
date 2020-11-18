@@ -3,4 +3,4 @@ project(t3)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(t3 main.cpp LargeNum.cpp LargeNum.h)
+add_executable(t3 main.cpp LargeNum.cpp LargeNum.h Interaction.cpp Interaction.h)

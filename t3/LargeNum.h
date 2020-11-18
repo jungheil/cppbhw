@@ -32,12 +32,15 @@ private:
 // 大数类
 class LargeNum{
 public:
-    LargeNum():nan_(true){};
+    LargeNum() = default;
     explicit LargeNum(std::string num);
     LargeNum(bool positive, std::string initer, std::string fractional = ""):
-            positive_(positive), initer_(std::move(initer)), fractional_(std::move(fractional)){
+            nan_(false), positive_(positive), initer_(std::move(initer)), fractional_(std::move(fractional)){
         Simplify();
     };
+
+    std::string Scientific();
+    bool get_nan(){return nan_;};
 
     friend class CAddition;
     friend class CSubtraction;
@@ -64,7 +67,7 @@ private:
 
 
 private:
-    bool nan_ = false;
+    bool nan_ = true;
     bool positive_ = true;  // 符号
     bool decimals_ = false;  // 是否为小数
     std::string initer_;  // 整数部分

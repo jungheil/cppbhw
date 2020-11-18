@@ -30,7 +30,7 @@ bool FormatNum::LookUpState(int &state, const char &s) {
 
 FormatNum LargeNum::formatnum_;
 
-LargeNum::LargeNum(string num) {
+LargeNum::LargeNum(string num):nan_(false) {
     int state = 0;
     stringstream initer;
     stringstream fractional;
@@ -60,6 +60,25 @@ void LargeNum::Simplify() {
     }
     if (initer_.empty()) initer_ = "0";
     decimals_ = !fractional_.empty();
+}
+
+string LargeNum::Scientific() {
+    stringstream ss;
+    int e;
+    if(initer_ == "0"){
+        if(!decimals_) return "0E0";
+        int i=1;
+        for(const auto &s: fractional_){
+            if(s == '0') i++;
+            else break;
+        }
+        e = -i;
+        ss<<fractional_[0]<<'.'<<fractional_.substr(1,fractional_.size()-1)<<'E'<<e;
+    }else{
+        e = initer_.size()-1;
+        ss<<initer_[0]<<'.'<<initer_.substr(1,initer_.size()-1)<<fractional_<<'E'<<e;
+    }
+    return ss.str();
 }
 
 void Compute::BAddZero(string &num1, string &num2){
