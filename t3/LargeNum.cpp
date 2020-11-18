@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <vector>
 
+ #include <iostream>
+
 using namespace std;
 
 
@@ -62,7 +64,7 @@ void LargeNum::Simplify() {
     decimals_ = !fractional_.empty();
 }
 
-string LargeNum::Scientific() {
+string LargeNum::Scientific() const{
     stringstream ss;
     int e;
     if(initer_ == "0"){
@@ -73,7 +75,8 @@ string LargeNum::Scientific() {
             else break;
         }
         e = -i;
-        ss<<fractional_[0]<<'.'<<fractional_.substr(1,fractional_.size()-1)<<'E'<<e;
+        cout<<111<<endl;
+        ss<<fractional_[i-1]<<'.'<<fractional_.substr(i,fractional_.size()-i)<<'E'<<e;
     }else{
         e = initer_.size()-1;
         ss<<initer_[0]<<'.'<<initer_.substr(1,initer_.size()-1)<<fractional_<<'E'<<e;
@@ -189,6 +192,10 @@ std::string Compute::SDivision(std::string &num1, const std::string &num2){
 std::ostream& operator << (std::ostream& out, const LargeNum& largenum){
     if (largenum.nan_){
         out << "nan";
+    }else if(largenum.fractional_.size()>2&&
+            largenum.fractional_[0]=='0'&&
+            largenum.fractional_[1]=='0'){
+        out<<largenum.Scientific();
     }else{
         out << (largenum.positive_?"":"-") << largenum.initer_;
         if(largenum.decimals_) out << '.' << largenum.fractional_;
@@ -365,38 +372,43 @@ LargeNum CMultiplication::Solve(const LargeNum &num1, const LargeNum &num2){
 LargeNum CDivision::Solve(const LargeNum &num1, const LargeNum &num2){
     stringstream ss;
     if (num2.initer_=="0" && !num2.decimals_) return LargeNum();
-    int slide = 3+num2.fractional_.size()-num1.fractional_.size();
+    int nor = num2.fractional_.size()-num1.fractional_.size();
     string n1 = num1.initer_+num1.fractional_;
     string n2 = num2.initer_+num2.fractional_;
-    if(slide < 0){
-        if(n1.size() > slide){
-            n1 = n1.substr(0, n1.size()-slide);
-        }else{
-            return LargeNum("0");
+    if(nor < 0){
+        for(int i=0;i< -nor;i++){
+            n2 = n2 + "0";
         }
     }else{
-        for(int i=0;i<slide;i++){
+        for(int i=0;i<nor;i++){
             n1 = n1 + "0";
         }
     }
-    if (n1.size()<n2.size()){
-        return LargeNum("0");
-    }
-    int step = n2.size();
+    int slide = n1.size()-n2.size();
     BAddZero(n1,n2);
-    step = n2.size() - step;
-
-    for(int i = 0; i <= step; i++){
-        ss << SDivision(n1,n2);
-        n2.erase(n2.end()-1);
-    }
+    int valid = 0;
+    string temp;
+    do{
+        temp = SDivision(n1,n2);
+        ss <<temp;
+        n1 = n1 + "0";
+        if(temp != "0" || valid != 0) valid++;
+    }while(!(valid>2&&ss.str().size() > slide+1+2||n1 == "0"));
     string out;
     ss >> out;
-    if(out[out.size()-1]>(48+4)) out[out.size()-2]++;
+    if(out[out.size()]>52) out[out.size()-1]++;
     out.erase(out.end()-1);
-    return LargeNum(!(num1.positive_^num2.positive_),
-                    out.substr(0,out.size()-2),
-                    out.substr(out.size()-2,2));
+    if(slide+1>0){
+        return LargeNum(!(num1.positive_^num2.positive_),
+                        out.substr(0,slide+1),
+                        out.substr(slide+1,out.size()-slide-1));
+    }else{
+        for(int i = 0; i< -slide; i++){
+            out = "0"+out;
+        }
+        return LargeNum(!(num1.positive_^num2.positive_),
+                        0,out);
+    }
 }
 
 ComFactory comfactory;

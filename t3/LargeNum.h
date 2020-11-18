@@ -39,7 +39,7 @@ public:
         Simplify();
     };
 
-    std::string Scientific();
+    std::string Scientific() const;
     bool get_nan(){return nan_;};
 
     friend class CAddition;
@@ -49,7 +49,6 @@ public:
 
     // 重载cout
     friend std::ostream& operator << (std::ostream&, const LargeNum&);
-
     friend std::istream& operator >> (std::istream&, LargeNum&);
     friend bool operator > (const LargeNum&,const LargeNum&);
     friend bool operator < (const LargeNum&,const LargeNum&);
