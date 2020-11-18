@@ -94,23 +94,27 @@ void Interaction<T>::Run() {
     Formula<T> formula;
 
     while(true){
-        stringstream ss;
-        string stemp;
-
+        Display();
+        cout << ">>\t" << formula.PrintFormula()<<endl;
+        cout<<"--------------------------------------------------"<<endl;
         switch (state) {
             case INTERACTION_STATE_FIRST:
-                Display();
                 cout<<"Please input the first NUMBER: "<<endl;
+                cout<<"(You can also input `exit` and `clear`)"<<endl;
                 break;
             case INTERACTION_STATE_OPERATOR:
-                Display();
                 cout<<"Please input the OPERATOR: "<<endl;
+                cout<<"(You can also input `exit` and `clear`)"<<endl;
                 break;
             case INTERACTION_STATE_SECOND:
-                Display();
                 cout<<"Please input the second NUMBER: "<<endl;
+                cout<<"(You can also input `exit` and `clear`)"<<endl;
                 break;
         }
+
+        stringstream ss;
+        ss.clear();
+        string stemp;
 
         cin >> stemp;
         ss << stemp;

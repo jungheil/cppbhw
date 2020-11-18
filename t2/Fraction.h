@@ -27,7 +27,7 @@ private:
     int Gcd(int a, int b);
     void Simplify();
 
-private:
+public:
     int numerator_;
     int denominator_;
     bool nan_ = false;

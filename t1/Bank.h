@@ -6,43 +6,57 @@
 #define T1_BANK_H
 
 #include <iostream>
+#include <utility>
 #include <vector>
 
-enum FACTORY_CURRENCY{
-    FACTORY_CURRENCY_POUND		= 0,
-    FACTORY_CURRENCY_EURO		= 1
+using namespace std;
+
+class Currency{
+public:
+    Currency(std::string name, float exchange_rate):name_(std::move(name)), exchange_rate_(exchange_rate){};
+    double RMB2FC(double money) const;
+    double FC2RMB(double money) const;
+    const std::string& get_name() const {return name_;};
+    double get_exchange_rate() const {return exchange_rate_;};
+
+protected:
+    std::string name_;
+    float exchange_rate_ = 1;
+
 };
 
 class Bank{
 public:
-    Bank(std::string currency);
-    double RMB2FC(double money) const;
-    double FC2RMB(double money) const;
-    const std::string &get_currency() const {return currency_;};
-    double get_exchange_rate() const {return exchange_rate_;};
+    explicit Bank(string path);
+    const Currency* Get(string name);
+    const Currency* Get(int index);
+    int get_size() const {return size_;};
+    const vector<Currency>& get_all(){return currency_;};
 
-protected:
-    std::string currency_;
-    float exchange_rate_ = 1;
 
 private:
-    void SplitString(const std::string& s, std::vector<std::string>& tokens, char delim = ' ');
+    vector<Currency> currency_;
+    int size_;
 };
 
-class Pound: public Bank{ ;
+class UI{
 public:
-    Pound():Bank("Pound"){}
+    UI(Bank *bank):bank_(bank){};
+    void Run();
+
+private:
+    void ChoiceCurrency(string);
+    void Exchange(string);
+
+private:
+    enum EXCHANGE_TYPE{
+        EXCHANGE_TYPE_FC2RMB        =   0,
+        EXCHANGE_TYPE_RMB2FC        =   1
+    };
+    EXCHANGE_TYPE exchange_type_;
+    Bank *bank_ = nullptr;
+    const Currency *currency_ = nullptr;
 };
 
-class Euro: public Bank{
-public:
-    Euro():Bank("Euro"){};
-};
-
-class Factory{
-public:
-    Factory() = default;
-    Bank *GetBank(FACTORY_CURRENCY index);
-};
 
 #endif //T1_BANK_H

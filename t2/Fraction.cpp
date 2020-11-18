@@ -80,7 +80,7 @@ Fraction operator * (Fraction a, Fraction b){
 
 Fraction operator / (Fraction a, Fraction b){
     if (a.nan_ || b.nan_) return Fraction();
-    else return Fraction(a.numerator_*b.denominator_, a.numerator_*b.denominator_);
+    else return Fraction(a.numerator_*b.denominator_, a.denominator_*b.numerator_);
 }
 
 int Fraction::Gcd(int a, int b) {

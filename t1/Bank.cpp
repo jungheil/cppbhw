@@ -3,67 +3,188 @@
 //
 
 #include <fstream>
+#include <sstream>
+#include <windows.h>
+#include <conio.h>
+
 
 #include "Bank.h"
 
 using namespace std;
 
 
-
-Bank::Bank(std::string currency):currency_(currency){
-    ifstream file("..\\rate.txt");
-    if(!file.is_open()){
-        std::cerr << "open param file failed." << std::endl;
-        exit(-1);
-    }
-
-    string line;
-    while(getline(file, line)){
-        vector<string> sline;
-        SplitString(line, sline, ':');
-        if(sline[0] == currency_) {
-            exchange_rate_ = atof(sline[1].c_str());
-            return;
-        }
-    }
-    std::cerr << "no parameter." << std::endl;
-    exit(-1);
-};
-
-double Bank::RMB2FC(double money) const {
+double Currency::RMB2FC(double money) const {
     return money * 100 / exchange_rate_;
 }
 
-double Bank::FC2RMB(double money) const {
+double Currency::FC2RMB(double money) const {
     return money * exchange_rate_ / 100;
 }
 
-void Bank::SplitString(const string& s, vector<string>& tokens, char delim) {
-    tokens.clear();
-    auto string_find_first_not = [s, delim](size_t pos = 0) -> size_t {
-        for (size_t i = pos; i < s.size(); i++) {
-            if (s[i] != delim) return i;
+Bank::Bank(string path) {
+    stringstream ss;
+    string name;
+    string rate;
+    ifstream fs(path);
+    if(!fs.is_open()){
+        perror("Bank");
+        exit(1);
+    }
+    getline(fs, name);
+    while(getline(fs, name)){
+        ss.clear();
+        ss.str("");
+        ss<<name;
+        getline(ss ,name, ',');
+        getline(ss,rate,',');
+        currency_.push_back(Currency(name,stof(rate)));
+    }
+    size_=currency_.size();
+}
+
+const Currency *Bank::Get(string name) {
+    for(const auto& s:currency_){
+        if(s.get_name() == name) return &s;
+    }
+    return nullptr;
+}
+
+const Currency *Bank::Get(int index) {
+    if(currency_.size()>index){
+        vector<Currency>::iterator it = currency_.begin()+index;
+        return (Currency*)&(*it);
+    }
+    return nullptr;
+}
+
+void UI::Run() {
+    char input;
+    while(true){
+        stringstream ss;
+        ss<<"=================================================="<<endl;
+        ss << ">>  " << "path: / " << endl;
+        ss << "--------------------------------------------------" << endl<< endl;
+        ss<<"OPTIONS:"<<endl<<endl;
+        ss<<"->  "<<"(1) Foreign currency to RMB."<<endl<<endl;
+        ss<<"->  "<<"(2) RMB to foreign currency."<<endl<<endl;
+        ss<<"->  "<<"(3) EXIT SYSTEM."<<endl<<endl;
+        ss<<"--------------------------------------------------"<<endl;
+
+        system("cls");
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                                FOREGROUND_INTENSITY | FOREGROUND_RED|
+                                BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE);
+        cout<<"# "<<"EXCHANGE OFFICE"<<endl;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
+        cout<<ss.str();
+
+        input = getch();
+        switch(input){
+            case '1':
+                exchange_type_ = EXCHANGE_TYPE_FC2RMB;
+                ChoiceCurrency("/ FC2RMB");
+                break;
+            case '2':
+                exchange_type_ = EXCHANGE_TYPE_RMB2FC;
+                ChoiceCurrency("/ RMB2FC");
+                break;
+            case '3':
+                exit(0);
         }
-        return string::npos;
-    };
-    size_t lastPos = string_find_first_not(0);
-    size_t pos = s.find(delim, lastPos);
-    while (lastPos != string::npos) {
-        tokens.emplace_back(s.substr(lastPos, pos - lastPos));
-        lastPos = string_find_first_not(pos);
-        pos = s.find(delim, lastPos);
     }
 }
 
-Bank* Factory::GetBank(FACTORY_CURRENCY index){
-    switch(index){
-        case FACTORY_CURRENCY_POUND:
-            return new Pound();
-            break;
-        case FACTORY_CURRENCY_EURO:
-            return new Euro();
-            break;
-        default:
-            return nullptr;
+void UI::ChoiceCurrency(string spath) {
+    do{
+        stringstream ss;
+        ss << "==================================================" << endl;
+        ss << ">>  " << "path: " << spath << endl;
+        ss << "--------------------------------------------------" << endl<< endl;
+        ss << "CURRENCY:" << endl << endl;
+        int i = 1;
+        for (const auto &s : bank_->get_all()) {
+            ss << "->  " << "(" << i++ << ") " << s.get_name() << endl << endl;
+        }
+        ss << "--------------------------------------------------" << endl;
+        ss << "Input index (NEED ENTER): " << endl;
+        system("cls");
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                                FOREGROUND_INTENSITY | FOREGROUND_RED |
+                                BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+        cout << "# " << "EXCHANGE OFFICE" << endl;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        cout << ss.str();
+
+        string input;
+        cin>>input;
+        currency_ = bank_->Get(stoi(input)-1);
+    }while(currency_ == nullptr);
+    Exchange(spath+" / "+currency_->get_name());
+}
+
+void UI::Exchange(string spath) {
+    bool flag = true;
+
+
+    while(flag){
+        stringstream ss;
+        ss << "==================================================" << endl;
+        ss << ">>  " << "path: " << spath << endl;
+        ss << "--------------------------------------------------" << endl<<endl;
+        ss << "EXCHANGE:" << endl << endl;
+        if(exchange_type_ == EXCHANGE_TYPE_FC2RMB){
+            ss << "\t***\t" << currency_->get_name()<<"\t==>\t***\tRMB"<<endl<<endl;
+        }else{
+            ss << "\t***\tRMB\t=>\t***\t" << currency_->get_name()<<endl<<endl;
+        }
+        ss << "--------------------------------------------------" << endl;
+        ss << "INPUT THE AMOUNT:" << endl;
+
+        system("cls");
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                                FOREGROUND_INTENSITY | FOREGROUND_RED |
+                                BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+        cout << "# " << "EXCHANGE OFFICE" << endl;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        cout << ss.str();
+
+        string amount;
+        cin >> amount;
+
+        ss.clear();
+        ss.str("");
+        ss << "==================================================" << endl;
+        ss << ">>  " << "path: " << spath << endl;
+        ss << "--------------------------------------------------" << endl<<endl;
+        ss << "EXCHANGE:" << endl << endl;
+        if(exchange_type_ == EXCHANGE_TYPE_FC2RMB){
+            ss <<"\t"<< stof(amount) <<"\t" << currency_->get_name()<<"\t=>\t"<<currency_->FC2RMB(stof(amount))<<"\tRMB"<<endl<<endl;
+        }else{
+            ss <<"\t"<< stof(amount) <<"\tRMB\t==>\t" <<currency_->RMB2FC(stof(amount))<<"\t" <<currency_->get_name()<<endl<<endl;
+        }
+        ss << "--------------------------------------------------" << endl<<endl;
+        ss<<"->  "<<"(1) Continue."<<endl<<endl;
+        ss<<"->  "<<"(2) Return."<<endl<<endl;
+        ss<<"--------------------------------------------------"<<endl;
+
+        system("cls");
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                                FOREGROUND_INTENSITY | FOREGROUND_RED |
+                                BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+        cout << "# " << "EXCHANGE OFFICE" << endl;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        cout << ss.str();
+
+        char input;
+        while(true){
+            input = getch();
+            if(input == '1'){
+                break;
+            }else if(input == '2'){
+                flag = false;
+                break;
+            }
+        }
     }
+
 }
