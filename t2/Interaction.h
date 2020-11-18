@@ -9,7 +9,7 @@
 #include <sstream>
 #include <vector>
 
-#include "LargeNum.h"
+#include "Fraction.h"
 
 enum INTERACTION_OPERATOR{
     OPERATOR_NONE               =   0,
@@ -54,7 +54,7 @@ private:
     };
 };
 
-template class Formula<LargeNum>;
-template class Interaction<LargeNum>;
+template class Formula<Fraction>;
+template class Interaction<Fraction>;
 
 #endif //T3_INTERACTION_H

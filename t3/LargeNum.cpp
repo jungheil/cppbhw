@@ -392,21 +392,22 @@ LargeNum CDivision::Solve(const LargeNum &num1, const LargeNum &num2){
         ss <<temp;
         n1 = n1 + "0";
         if(temp != "0" || valid != 0) valid++;
-    }while(!(valid>2&&ss.str().size() > slide+1+2||n1 == "0"));
+    }while(!(valid>2&&(int)ss.str().size() > slide+1+2||n1 == "0"));
     string out;
     ss >> out;
-    if(out[out.size()]>52) out[out.size()-1]++;
+
+    if(out[out.size()-1]>'4') out[out.size()-2] ++;
     out.erase(out.end()-1);
     if(slide+1>0){
         return LargeNum(!(num1.positive_^num2.positive_),
                         out.substr(0,slide+1),
                         out.substr(slide+1,out.size()-slide-1));
     }else{
-        for(int i = 0; i< -slide; i++){
+        for(int i = 0; i< -slide-1; i++){
             out = "0"+out;
         }
         return LargeNum(!(num1.positive_^num2.positive_),
-                        0,out);
+                        "0",out);
     }
 }
 

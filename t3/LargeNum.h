@@ -40,7 +40,7 @@ public:
     };
 
     std::string Scientific() const;
-    bool get_nan(){return nan_;};
+    bool get_nan() const{return nan_;};
 
     friend class CAddition;
     friend class CSubtraction;
