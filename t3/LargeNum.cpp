@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <vector>
 
- #include <iostream>
+//#include <iostream>
 
 using namespace std;
 
@@ -75,7 +75,6 @@ string LargeNum::Scientific() const{
             else break;
         }
         e = -i;
-        cout<<111<<endl;
         ss<<fractional_[i-1]<<'.'<<fractional_.substr(i,fractional_.size()-i)<<'E'<<e;
     }else{
         e = initer_.size()-1;
