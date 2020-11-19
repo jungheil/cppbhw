@@ -28,6 +28,8 @@ Bank::Bank(string path) {
     ifstream fs(path);
     if(!fs.is_open()){
         perror("Bank");
+        cout<<"Please input any key to continues..."<<endl;
+        getch();
         exit(1);
     }
     getline(fs, name);
@@ -59,7 +61,8 @@ const Currency *Bank::Get(int index) {
 
 void UI::Run() {
     char input;
-    while(true){
+    bool run = true;
+    while(run){
         stringstream ss;
         ss<<"=================================================="<<endl;
         ss << ">>  " << "path: / " << endl;
@@ -89,7 +92,7 @@ void UI::Run() {
                 ChoiceCurrency("/ RMB2FC");
                 break;
             case '3':
-                exit(0);
+                run = false;
         }
     }
 }

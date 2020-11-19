@@ -120,7 +120,7 @@ void Interaction<T>::Run() {
         ss << stemp;
 
         if(ss.str() == "exit"){
-            exit(0);
+            break;
         }else if(ss.str() == "clear"){
             formula = Formula<T>();
             state = INTERACTION_STATE_FIRST;
