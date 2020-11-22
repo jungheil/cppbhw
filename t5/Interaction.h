@@ -16,6 +16,7 @@ private:
     void List();
     void SaveData();
     void AddEmployee();
+    // TODO 加入列表
     void DeleteEmployee();
     void SetBonus();
     void SetSales();
