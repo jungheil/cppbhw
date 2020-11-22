@@ -1,7 +1,10 @@
 #include <iostream>
 #include "Company.h"
+#include "Interaction.h"
 
+using namespace std;
 int main(int argc, char** argv) {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    Interaction *interaction = new Interaction;
+    interaction->Run();
+    delete interaction;
 }
