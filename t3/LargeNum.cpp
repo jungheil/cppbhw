@@ -192,9 +192,7 @@ std::ostream& operator << (std::ostream& out, const LargeNum& largenum){
     if (largenum.nan_){
         out << "nan";
     }else if(largenum.initer_=="0"&&
-            largenum.fractional_.size()>2&&
-            largenum.fractional_[0]=='0'&&
-            largenum.fractional_[1]=='0'){
+            largenum.decimals_){
         out<<largenum.Scientific();
     }else{
         out << (largenum.positive_?"":"-") << largenum.initer_;
