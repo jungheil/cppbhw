@@ -257,6 +257,7 @@ void Interaction::AddEmployee() {
 
 void Interaction::DeleteEmployee() {
     Company *company = SelectDepartment("Delete employee");
+    vector<People*> people = company->ListEmployee();
     string name;
     bool ret;
 
@@ -264,8 +265,15 @@ void Interaction::DeleteEmployee() {
     ss<<"=================================================="<<endl;
     ss<<"* Delete employee"<<endl;
     ss<<"--------------------------------------------------"<<endl<<endl;
-    ss<<"   Please input employee name you want to delete:"<<endl<<endl;
+    ss<<"    "<<setw(8)<<"-index"<<setw(17)<<"-name"<<setw(17)<<"-department"<<
+      setw(8)<<"-level"<<setw(20)<<"-position"<<setw(11)<<"-salary"<<endl;
+    for(const auto s:people){
+        ss<<"->  "<<setw(8)<<s->get_index()<<setw(17)<<s->get_name()<<setw(17)<<s->get_department()
+          <<setw(8)<<s->get_level()<<setw(20)<<s->get_position()<<setw(11)<<s->get_salary_()<<endl;
+    }
+    ss<<endl;
     ss<<"--------------------------------------------------"<<endl;
+    ss<<"Please input employee name you want to delete:"<<endl;
 
     system("cls");
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),

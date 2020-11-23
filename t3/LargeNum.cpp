@@ -191,7 +191,8 @@ std::string Compute::SDivision(std::string &num1, const std::string &num2){
 std::ostream& operator << (std::ostream& out, const LargeNum& largenum){
     if (largenum.nan_){
         out << "nan";
-    }else if(largenum.fractional_.size()>2&&
+    }else if(largenum.initer_=="0"&&
+            largenum.fractional_.size()>2&&
             largenum.fractional_[0]=='0'&&
             largenum.fractional_[1]=='0'){
         out<<largenum.Scientific();
