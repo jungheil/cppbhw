@@ -59,7 +59,7 @@ public:
     const std::string& get_co_name(){return co_name_;};
 
 protected:
-    virtual float CalculateSalary(People *people){return 10;};
+    virtual float CalculateSalary(People *people){return 0;};
 
 protected:
 
