@@ -67,7 +67,7 @@ template <class T>
 void Interaction<T>::Display() {
     stringstream ss;
     ss<<"=================================================="<<endl;
-    if(formulas_.size()<5){
+    if(formulas_.size()<MAX_HISTORY_){
         for(int i=0; i<MAX_HISTORY_-formulas_.size(); i++){
             ss<<"->"<<endl;
         }

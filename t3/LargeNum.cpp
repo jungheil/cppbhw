@@ -377,13 +377,14 @@ LargeNum CDivision::Solve(const LargeNum &num1, const LargeNum &num2){
         for(int i=0;i< -nor;i++){
             n2 = n2 + "0";
         }
-    }else{
-        for(int i=0;i<nor;i++){
-            n1 = n1 + "0";
-        }
     }
+//    else{
+//        for(int i=0;i<nor;i++){
+//            n1 = n1 + "0";
+//        }
+//    }
     int slide = n1.size()-n2.size();
-    BAddZero(n1,n2);
+    if(n1.size()>n2.size()) BAddZero(n1,n2);
     int valid = 0;
     string temp;
     do{
