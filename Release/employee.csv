@@ -1,0 +1,6 @@
+department,index,name,level,position,salary
+Administrative,1,Zhao,4,General manager,20000
+Technology,2,Qian,3,Technical manager,13000
+Technology,3,Sun,2,Technical staff,7000
+Market,4,Li,3,Sales manager,9000
+Market,5,Zhou,1,Salesperson,999

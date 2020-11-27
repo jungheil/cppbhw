@@ -11,6 +11,7 @@
 
 using namespace std;
 
+// 货币类
 class Currency{
 public:
     Currency(std::string name, float exchange_rate):name_(std::move(name)), exchange_rate_(exchange_rate){};
@@ -25,6 +26,7 @@ protected:
 
 };
 
+// 银行类
 class Bank{
 public:
     explicit Bank(string path);
@@ -39,6 +41,7 @@ private:
     int size_;
 };
 
+// 交互界面
 class UI{
 public:
     UI(Bank *bank):bank_(bank){};

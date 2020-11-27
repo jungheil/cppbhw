@@ -39,9 +39,11 @@ public:
         Simplify();
     };
 
+    // 使用科学计数法显示
     std::string Scientific() const;
     bool get_nan() const{return nan_;};
 
+    // 将计算类设置为友元
     friend class CAddition;
     friend class CSubtraction;
     friend class CMultiplication;
@@ -62,6 +64,7 @@ public:
     friend LargeNum abs(const LargeNum &largenum);
 
 private:
+    // 化简（除0）
     void Simplify();
 
 
@@ -71,23 +74,27 @@ private:
     bool decimals_ = false;  // 是否为小数
     std::string initer_;  // 整数部分
     std::string fractional_;  // 小数部分
-    static FormatNum formatnum_;
+    static FormatNum formatnum_;  // 状态转移
 };
 
 // 大数计算基类
 class Compute{
 public:
     Compute() = default;
+    // 对外计算方法
     virtual LargeNum Solve(const LargeNum &num1, const LargeNum &num2) = 0;
 
+    // 前补0和后补0
     static void BAddZero(std::string &num1, std::string &num2);
     static void FAddZero(std::string &num1, std::string &num2);
+    // 按位加减乘除计算
     static std::string SAddition(const std::string &num1, const std::string &num2, bool carry = false);
     static std::string SSubtraction(const std::string &num1, const std::string &num2, bool carry = false);
     static std::string SMultiplication(const std::string &num1, const char &num2);
     static std::string SDivision(std::string &num1, const std::string &num2);
 };
 
+// 加减乘除计算子类
 class CAddition: public Compute{
 public:
     LargeNum Solve(const LargeNum &num1, const LargeNum &num2) override;
@@ -110,6 +117,7 @@ public:
     LargeNum Solve(const LargeNum &num1, const LargeNum &num2) override;
 };
 
+// 计算类的单例工厂
 class ComFactory{
 public:
     ComFactory() = default;

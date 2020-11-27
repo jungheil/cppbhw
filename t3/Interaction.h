@@ -19,6 +19,7 @@ enum INTERACTION_OPERATOR{
     OPERATOR_DIVISION           =   4
 };
 
+// 公式类，具有计算和打印公式的功能
 template<class T>
 class Formula{
 public:
@@ -40,13 +41,18 @@ template<class T>
 class Interaction{
 public:
     Interaction(std::string name):name_(name){};
+    // 刷新显示界面，外部一般不需要使用
     void Display();
+    // 对外部的接口
     void Run();
 
 private:
     std::string name_;
+    // 最大公式存储历史
     int MAX_HISTORY_ =10;
+    // 聚类了公式类
     std::vector<Formula<T>> formulas_;
+    // 用户输入状态，用于判断当前输入和状态转移
     enum INTERACTION_STATE{
         INTERACTION_STATE_FIRST         =   0,
         INTERACTION_STATE_OPERATOR      =   1,
