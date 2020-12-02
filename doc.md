@@ -20,7 +20,7 @@
 
 ### 程序框图
 
-![t1](D:%5Ccppbhw%5Cdoc%5Ct1.svg)
+![t1](doc%5Ct1.svg)
 
 
 
@@ -28,19 +28,19 @@
 
 + 主菜单
 
-  ![101](D:%5Ccppbhw%5Cdoc%5C101.png)
+  ![101](doc%5C101.png)
 
 + 选择币种
 
-  ![102](D:%5Ccppbhw%5Cdoc%5C102.png)
+  ![102](doc%5C102.png)
 
 + 币种配置文件
 
-  ![103](D:%5Ccppbhw%5Cdoc%5C103.png)
+  ![103](doc%5C103.png)
 
 + 兑换结果
 
-  ![104](D:%5Ccppbhw%5Cdoc%5C104.png)
+  ![104](doc%5C104.png)
 
 
 
@@ -74,13 +74,13 @@
 
 ### 程序框图
 
-![t2](D:%5Ccppbhw%5Cdoc%5Ct2.svg)
+![t2](doc%5Ct2.svg)
 
 
 
 ### 运行效果
 
-![201](D:%5Ccppbhw%5Cdoc%5C201.png)
+![201](doc%5C201.png)
 
 
 
@@ -116,13 +116,13 @@
 
 ### 程序框图
 
-![t3](D:%5Ccppbhw%5Cdoc%5Ct3.svg)
+![t3](doc%5Ct3.svg)
 
 
 
 ### 运行效果
 
-![301](D:%5Ccppbhw%5Cdoc%5C301.png)
+![301](doc%5C301.png)
 
 
 
@@ -150,7 +150,7 @@
 
 ### 程序框图
 
-![t5](D:%5Ccppbhw%5Cdoc%5Ct5.svg)
+![t5](doc%5Ct5.svg)
 
 
 
@@ -158,19 +158,19 @@
 
 + 主菜单
 
-  ![501](D:%5Ccppbhw%5Cdoc%5C501.png)
+  ![501](doc%5C501.png)
 
 + 员工列表（工资升序）
 
-  ![502](D:%5Ccppbhw%5Cdoc%5C502.png)
+  ![502](doc%5C502.png)
 
 + 公司部门配置文件
 
-  ![503](D:%5Ccppbhw%5Cdoc%5C503.png)
+  ![503](doc%5C503.png)
 
 + 员工信息存档
 
-  ![504](D:%5Ccppbhw%5Cdoc%5C504.png)
+  ![504](doc%5C504.png)
 
 
 

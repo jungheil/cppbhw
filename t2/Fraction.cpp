@@ -42,12 +42,12 @@ Fraction::Fraction(std::string fraction){
 }
 
 std::ostream& operator << (std::ostream& out, const Fraction& fraction){
-    if(fraction.numerator_ == 0) {
+    if(fraction.nan_){
+        out << "nan";
+    }else if(fraction.numerator_ == 0) {
         out << 0;
     }else if(fraction.denominator_ == 1) {
         out << fraction.numerator_;
-    }else if(fraction.nan_){
-        out << "nan";
     }else{
         out << fraction.numerator_ << "/" <<fraction.denominator_;
     }
