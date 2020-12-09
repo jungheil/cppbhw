@@ -28,6 +28,7 @@ Bank::Bank(string path) {
     ifstream fs(path);
     if(!fs.is_open()){
         perror("Bank");
+        cout<<"File \"rate.csv\" does not exist."<<endl;
         cout<<"Please input any key to continues..."<<endl;
         getch();
         exit(1);

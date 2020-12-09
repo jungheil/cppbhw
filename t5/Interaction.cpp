@@ -79,7 +79,7 @@ void Interaction::Run() {
 }
 
 void Interaction::List() {
-    float total;
+    long double total = 0;
     vector<People*> people = company_->ListEmployee();
     sort(people.begin(),people.end(),CompareSalary);
     stringstream ss;
