@@ -79,6 +79,7 @@ void Interaction::Run() {
 }
 
 void Interaction::List() {
+    float total;
     vector<People*> people = company_->ListEmployee();
     sort(people.begin(),people.end(),CompareSalary);
     stringstream ss;
@@ -90,8 +91,10 @@ void Interaction::List() {
     for(const auto s:people){
         ss<<"->  "<<setw(8)<<s->get_index()<<setw(17)<<s->get_name()<<setw(17)<<s->get_department()
                 <<setw(8)<<s->get_level()<<setw(20)<<s->get_position()<<setw(11)<<s->get_salary_()<<endl;
+        total += s->get_salary_();
     }
     ss<<endl;
+    ss<<"->  "<<setw(70)<<"total salary:"<<setw(11)<<total<<endl<<endl;
     ss<<"--------------------------------------------------"<<endl;
     ss<<"Please press 'q' to return..."<<endl;
 
