@@ -36,10 +36,11 @@ void Interaction::Run() {
         ss<<"->  "<<"(1) List all employees(Salary ascending)."<<endl<<endl;
         ss<<"->  "<<"(2) Add employee."<<endl<<endl;
         ss<<"->  "<<"(3) Delete employee."<<endl<<endl;
-        ss<<"->  "<<"(4) Set bonus."<<endl<<endl;
-        ss<<"->  "<<"(5) Set sales."<<endl<<endl;
-        ss<<"->  "<<"(6) Save data."<<endl<<endl;
-        ss<<"->  "<<"(7) Exit."<<endl<<endl;
+        ss<<"->  "<<"(4) Change position."<<endl<<endl;
+        ss<<"->  "<<"(5) Set bonus."<<endl<<endl;
+        ss<<"->  "<<"(6) Set sales."<<endl<<endl;
+        ss<<"->  "<<"(7) Save data."<<endl<<endl;
+        ss<<"->  "<<"(8) Exit."<<endl<<endl;
         ss<<"--------------------------------------------------"<<endl;
 
         system("cls");
@@ -62,18 +63,23 @@ void Interaction::Run() {
                 DeleteEmployee();
                 break;
             case '4':
-                SetBonus();
+                ChangePosition();
                 break;
             case '5':
-                SetSales();
+                SetBonus();
                 break;
             case '6':
-                SaveData();
+                SetSales();
                 break;
             case '7':
-                run = false;
+                SaveData();
+                break;
+            case '8':
+                if(RUSure("EXIT")) run = false;
+                break;
             case 27:
-                run = false;
+                if(RUSure("EXIT")) run = false;
+                break;
         }
     }
 }
@@ -89,7 +95,7 @@ void Interaction::List() {
     ss<<"    "<<setw(8)<<"-index"<<setw(17)<<"-name"<<setw(17)<<"-department"<<
             setw(8)<<"-level"<<setw(20)<<"-position"<<setw(11)<<"-salary"<<endl;
     for(const auto s:people){
-        ss<<"->  "<<setw(8)<<s->get_index()<<setw(17)<<s->get_name()<<setw(17)<<s->get_department()
+        ss<<"->  "<<setw(8)<<s->get_index()<<setw(17)<<s->get_name()<<setw(17)<<s->get_department()->get_co_name()
                 <<setw(8)<<s->get_level()<<setw(20)<<s->get_position()<<setw(11)<<s->get_salary_()<<endl;
         total += s->get_salary_();
     }
@@ -114,6 +120,8 @@ void Interaction::List() {
 }
 
 void Interaction::SaveData() {
+    if(!RUSure("Save data")) return;
+
     company_->SaveData("employee.csv");
     stringstream ss;
     ss<<"=================================================="<<endl;
@@ -172,6 +180,58 @@ Company *Interaction::SelectDepartment(string name) {
     }
 }
 
+bool Interaction::RUSure(std::string name) {
+    stringstream ss;
+    ss<<"=================================================="<<endl;
+    ss<<"* "<<name<<endl;
+    ss<<"--------------------------------------------------"<<endl<<endl;
+
+    ss<<"    "<<"Are you sure to do this? [y/N]"<<endl<<endl;
+
+    ss<<"--------------------------------------------------"<<endl;
+
+    system("cls");
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                            FOREGROUND_INTENSITY | FOREGROUND_RED|
+                            BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE);
+    cout<<"# "<<"STAFF MANAGEMENT SYSTEM"<<endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
+    cout<<ss.str();
+
+    cin.sync();
+//    cin.clear();
+    char sure = cin.get();
+    cin.sync();
+    if(sure != 'Y' && sure != 'y' ) return false;
+    else return true;
+}
+
+void Interaction::FalseReturn(std::string name, std::string type) {
+    stringstream ss;
+    ss<<"=================================================="<<endl;
+    ss<<"* "<<name<<endl;
+    ss<<"--------------------------------------------------"<<endl<<endl;
+
+    ss<<"    "<<"Change failed! ("<<type<<")"<<endl<<endl;
+
+    ss<<"--------------------------------------------------"<<endl;
+    ss<<"Please press 'q' to return..."<<endl;
+
+    system("cls");
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                            FOREGROUND_INTENSITY | FOREGROUND_RED|
+                            BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE);
+    cout<<"# "<<"STAFF MANAGEMENT SYSTEM"<<endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
+    cout<<ss.str();
+
+    char input;
+    while(true){
+        input = getch();
+        if(input == 'q' || input == 'Q' || input == 27) return;
+    }
+}
+
 void Interaction::AddEmployee() {
     Company *company = SelectDepartment("Add employee");
     map<std::string, int> positions = company->get_position();
@@ -203,7 +263,7 @@ void Interaction::AddEmployee() {
         input = getch();
         if(input < '1' || input > item+48) continue;
         else{
-            map<std::string, int>::iterator it = positions.begin();
+            auto it = positions.begin();
             for(int i = 0; i<(input - 49); i++){
                 it++;
             }
@@ -229,6 +289,10 @@ void Interaction::AddEmployee() {
     cout<<ss.str();
 
     cin >> name;
+
+    if(!RUSure("Add employee")) return;
+
+
     bool ret = company->AddEmployee(new People(name), position);
 
     ss.clear();
@@ -259,9 +323,9 @@ void Interaction::AddEmployee() {
 }
 
 void Interaction::DeleteEmployee() {
-    Company *company = SelectDepartment("Delete employee");
-    vector<People*> people = company->ListEmployee();
-    string name;
+//    Company *company = SelectDepartment("Delete employee");
+    vector<People*> people = company_->ListEmployee();
+    int index;
     bool ret;
 
     stringstream ss;
@@ -271,12 +335,12 @@ void Interaction::DeleteEmployee() {
     ss<<"    "<<setw(8)<<"-index"<<setw(17)<<"-name"<<setw(17)<<"-department"<<
       setw(8)<<"-level"<<setw(20)<<"-position"<<setw(11)<<"-salary"<<endl;
     for(const auto s:people){
-        ss<<"->  "<<setw(8)<<s->get_index()<<setw(17)<<s->get_name()<<setw(17)<<s->get_department()
+        ss<<"->  "<<setw(8)<<s->get_index()<<setw(17)<<s->get_name()<<setw(17)<<s->get_department()->get_co_name()
           <<setw(8)<<s->get_level()<<setw(20)<<s->get_position()<<setw(11)<<s->get_salary_()<<endl;
     }
     ss<<endl;
     ss<<"--------------------------------------------------"<<endl;
-    ss<<"Please input employee name you want to delete:"<<endl;
+    ss<<"Please input employee index you want to delete:"<<endl;
 
     system("cls");
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
@@ -286,11 +350,14 @@ void Interaction::DeleteEmployee() {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
     cout<<ss.str();
 
-    cin >> name;
+    cin >> index;
 
-    for(const auto s: company->ListEmployee()){
-        if(s->get_name() == name){
-            company->RemoveEmplyee(s);
+    if(!RUSure("Delete employee")) return;
+
+
+    for(const auto s: company_->ListEmployee()){
+        if(s->get_index() == index){
+            s->get_department()->RemoveEmplyee(s);
             ret = true;
             break;
         }
@@ -306,6 +373,113 @@ void Interaction::DeleteEmployee() {
         ss<<"    "<<"Delete successfully!"<<endl<<endl;
     }else{
         ss<<"    "<<"Delete failed!"<<endl<<endl;
+    }
+    ss<<"--------------------------------------------------"<<endl;
+    ss<<"Please press 'q' to return..."<<endl;
+
+    system("cls");
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                            FOREGROUND_INTENSITY | FOREGROUND_RED|
+                            BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE);
+    cout<<"# "<<"STAFF MANAGEMENT SYSTEM"<<endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
+    cout<<ss.str();
+
+    char input;
+    while(true){
+        input = getch();
+        if(input == 'q' || input == 'Q' || input == 27) break;
+    }
+}
+
+void Interaction::ChangePosition() {
+//    Company *company = SelectDepartment("Delete employee");
+    vector<People*> people = company_->ListEmployee();
+    int index;
+    bool ret;
+    People* target;
+
+    stringstream ss;
+    ss<<"=================================================="<<endl;
+    ss<<"* Change position"<<endl;
+    ss<<"--------------------------------------------------"<<endl<<endl;
+    ss<<"    "<<setw(8)<<"-index"<<setw(17)<<"-name"<<setw(17)<<"-department"<<
+      setw(8)<<"-level"<<setw(20)<<"-position"<<setw(11)<<"-salary"<<endl;
+    for(const auto s:people){
+        ss<<"->  "<<setw(8)<<s->get_index()<<setw(17)<<s->get_name()<<setw(17)<<s->get_department()->get_co_name()
+          <<setw(8)<<s->get_level()<<setw(20)<<s->get_position()<<setw(11)<<s->get_salary_()<<endl;
+    }
+    ss<<endl;
+    ss<<"--------------------------------------------------"<<endl;
+    ss<<"Please input employee index you want to Change:"<<endl;
+
+    system("cls");
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                            FOREGROUND_INTENSITY | FOREGROUND_RED|
+                            BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE);
+    cout<<"# "<<"STAFF MANAGEMENT SYSTEM"<<endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
+    cout<<ss.str();
+
+    cin >> index;
+
+    for(const auto s: company_->ListEmployee()){
+        if(s->get_index() == index){
+            target = s;
+            ret = true;
+            break;
+        }
+        ret = false;
+    }
+
+    if(!ret){
+        FalseReturn("Change position","No such person");
+        return;
+    }
+
+    ss.clear();
+    ss.str("");
+    ss<<"=================================================="<<endl;
+    ss<<"* Change position"<<endl;
+    ss<<"--------------------------------------------------"<<endl<<endl;
+    ss<<"Select Position:"<<endl<<endl;
+    int item = 0;
+    for(const auto& s:target->get_department()->get_position()){
+        ss<<"->  "<<"("<<++item<<") "<<s.first<<" (level: "<<s.second<<")"<<endl<<endl;
+    }
+    ss<<endl;
+    ss<<"--------------------------------------------------"<<endl;
+    ss<<"Please input the position index you want to change:"<<endl;
+
+    system("cls");
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                            FOREGROUND_INTENSITY | FOREGROUND_RED|
+                            BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE);
+    cout<<"# "<<"STAFF MANAGEMENT SYSTEM"<<endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
+    cout<<ss.str();
+
+    int ps_id;
+    cin >> ps_id;
+    if(!RUSure("Change position")) return;
+
+    if(ps_id > target->get_department()->get_position().size() || ps_id < 1){
+        FalseReturn("Change position", "No such position");
+        return;
+    }
+    auto it = target->get_department()->get_position().begin();
+    for(;ps_id > 1;ps_id--) it++;
+    ret = target->get_department()->ChangePosition(target,it->first);
+
+    ss.clear();
+    ss.str("");
+    ss<<"=================================================="<<endl;
+    ss<<"* Change position"<<endl;
+    ss<<"--------------------------------------------------"<<endl<<endl;
+    if(ret){
+        ss<<"    "<<"Change successfully!"<<endl<<endl;
+    }else{
+        ss<<"    "<<"Change failed!"<<endl<<endl;
     }
     ss<<"--------------------------------------------------"<<endl;
     ss<<"Please press 'q' to return..."<<endl;
@@ -343,6 +517,9 @@ void Interaction::SetBonus() {
     cout<<ss.str();
 
     cin >>bonus;
+
+    if(!RUSure("Set bonus")) return;
+
     technology_->set_bonus(stof(bonus));
 
 
@@ -428,6 +605,9 @@ void Interaction::SetSales() {
     cout<<ss.str();
 
     cin >>sales;
+
+    if(!RUSure("Set sales")) return;
+
     market_->set_sales(stof(sales));
 
     stringstream out;

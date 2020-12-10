@@ -403,9 +403,10 @@ LargeNum CDivision::Solve(const LargeNum &num1, const LargeNum &num2){
                         out.substr(0,slide+1),
                         out.substr(slide+1,out.size()-slide-1));
     }else{
-        for(int i = 0; i< -slide-1; i++){
-            out = "0"+out;
-        }
+//        for(int i = 0; i< -slide-1; i++){
+//            out = "0"+out;
+//        }
+        out.erase(out.begin());
         return LargeNum(!(num1.positive_^num2.positive_),
                         "0",out);
     }

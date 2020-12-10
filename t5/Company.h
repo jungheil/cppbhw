@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 
+class Company;
 
 class People{
 public:
@@ -20,13 +21,13 @@ public:
     int get_level() const {return level_;};
     float get_salary_() const {return salary_;};
     const std::string& get_position() const {return position_;};
-    const std::string& get_department() const {return department_;};
+    Company* get_department() {return department_;};
 
     friend class Company;
 
 private:
-    People(std::string department, int index, std::string name, int level, std::string position, float salary):
-        department_(std::move(department)),index_(index),name_(std::move(name)),level_(level),position_(std::move(position)),salary_(salary){};
+    People(Company* department, int index, std::string name, int level, std::string position, float salary):
+        department_(department),index_(index),name_(std::move(name)),level_(level),position_(std::move(position)),salary_(salary){};
 
 private:
     std::string name_;
@@ -34,7 +35,7 @@ private:
     int level_ = 1;
     float salary_ = 0;
     std::string position_ = "None";
-    std::string department_ = "None";
+    Company* department_ = nullptr;
 };
 
 class Company{
@@ -52,11 +53,11 @@ public:
 
     void SaveData(std::string path) const;
 
-    const std::map<std::string, int>& get_position(){return positions_;};
+    std::map<std::string, int>& get_position(){return positions_;};
 
     void UpdateSalary();
 
-    const std::string& get_co_name(){return co_name_;};
+    const std::string& get_co_name() const {return co_name_;};
 
 protected:
     virtual float CalculateSalary(People *people){return 0;};

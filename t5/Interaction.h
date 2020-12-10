@@ -17,10 +17,14 @@ private:
     void SaveData();
     void AddEmployee();
     void DeleteEmployee();
+    void ChangePosition();
     void SetBonus();
     void SetSales();
 
     Company* SelectDepartment(std::string name);
+
+    bool RUSure(std::string name);
+    void FalseReturn(std::string name, std::string type);
 
 private:
     Company *company_;

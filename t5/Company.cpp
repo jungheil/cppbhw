@@ -34,7 +34,7 @@ co_name_(std::move(name)) {
         getline(ss ,position, ',');
         getline(ss ,salary, ',');
         i_index = stoi(index);
-        employees_.push_back(new People(department,
+        employees_.push_back(new People(this,
                                         i_index,p_name,
                                         stoi(level),position,
                                         stof(salary)));
@@ -84,7 +84,7 @@ std::vector<People*> Company::ListEmployee() const{
 bool Company::AddEmployee(People *people, const std::string& position) {
     if(!ChangePosition(people,position)) return false;
     people->index_ = ++index_;
-    people->department_ = co_name_;
+    people->department_ = this;
     people->salary_=CalculateSalary(people);
     employees_.push_back(people);
     return true;
@@ -119,6 +119,7 @@ bool Company::ChangePosition(People *people, const std::string& position) {
     }
     people->level_ = level;
     people->position_=position;
+    people->salary_=CalculateSalary(people);
     return true;
 }
 
@@ -128,7 +129,7 @@ void Company::SaveData(std::string path) const {
     ofstream fs(path, ios::out);
     fs << "department,index,name,level,position,salary" <<endl;
     for(const auto s:people){
-        fs<<s->get_department()<<','<<s->get_index()<<','<<s->get_name()<<','
+        fs<<s->get_department()->get_co_name()<<','<<s->get_index()<<','<<s->get_name()<<','
             <<s->get_level()<<','<<s->get_position()<<','<<s->get_salary_()<<endl;
     }
     fs.close();
